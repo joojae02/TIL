@@ -1,1 +1,241 @@
+# 객체와 자료구조
+변수를 비공개로 정의한다.  
+이는 남들이 변수에 의존하지 않게 만들고 싶어서이다.  
+SOLID 원칙
+- SRP : 클래스, 함수 등은 단 하나의 책임(기능)만을 가져야 한다.
+- OCP : 기존의 코드를 변경하지 않고 기능을 수정하거나 추가할 수 있도록 설계한다.
+- LSP : 자식 클래스는 부모클래스에서 가능한 행위를 수행할 수 있어야 한다.
+- ISP : 자신이 사용하지 않는 기능(인터페이스)은 구현하지 말아야한다.
+- DIP : 의존 관계를 맺을 때, 변화하기 쉬운것 보단 변화하기 어려운 것에 의존해야 한다.
+## 자료 추상화
+- 변수 사이에 함수라는 계층을 넣는다고 구현이 감춰지지는 않는다
+- 사용자가 구현을 모른채 자료의 핵심을 조작할 수 있어야 진정한 클래스이다
+```java
+//구체적인 Point 클래스
+public class Point {
+	public double x;
+	public double y;
+}
+//추상적인 Point 클래스
+public interface Point {
+	double getX();
+	double getY();
+	void setCartesian(double x, double y); 
+	double getR();
+	double getTheta();
+	void setPolar(double r, double theta);
+}
+```
+단순산 함수(getter, setter)만으로는 추상화가 이뤄지지 않는다.  
+메소드 또한 자료를 세세히 공개하는것보단 추상적인 개념으로 표현하는것이 좋다.
 
+## 자료/객체 비대칭
+
+```java
+public class Square { 
+	public Point topLeft; 
+	public double side;
+}
+
+public class Rectangle { 
+	public Point topLeft; 
+	public double height; 
+	public double width;
+}
+
+public class Circle { 
+	public Point center; 
+	public double radius;
+}
+
+public class Geometry {
+	public final double PI = 3.141592653589793;
+
+	public double area(Object shape) throws NoSuchShapeException {
+        if (shape instanceof Square) { 
+            ...
+		} else if (shape instanceof Rectangle) { 
+            ...
+        }
+	}
+}
+```
+각 도형 클래스는 아무 메소드도 제공하지 않는 간단한 도형 클래스이다.  
+Geometry 클래스에 다른 함수를 추가하고 싶다면 도형 클래스는 영향을 받지 않는다.  
+하지만 새 도형을 추가하고 싶다면 함수를 모두 고쳐야한다.  
+### 따라서
+객체와 자료구조는 상반된다는 특징이 있으며 반대로 상호 보완적인 특징이 있다.
+
+절차적인 코드
+- 기존 클래스를 변경하지 않으면서 새 함수를 추가하기 쉽다.
+- 새로운 클래스를 추가하기 어렵다. 그러려면 모든 함수를 고쳐야한다.
+객체 지향 코드
+- 기존 함수를 변경하지 않으면서도 새 클래스를 추가하기 쉽다.
+- 새로운 함수를 추가하기 어렵다. 그러려면 모든 클래스를 고쳐야한다.
+
+새로운 자료 타입이 필요한 경우  
+- 클래스와 객체지향 기법
+새로운 함수가 필요한 경우
+- 절차적인 코드와 자료 구조
+
+## 디미터 법칙
+디미터 법칙은 잘 알려진 휴리스틱이다.  
+모둘은 자신이 조작하는 객체의 속사정을 몰라야 한다는 법칙이다.  
+디미터 법칙에서는 클래스 C의 메서드 f는 다음과 같은 객체의 메서드만 호출해야한다.  
+
+- 클래스 C
+- f가 생성한 객체
+- f인수로 넘어온 객체
+- C인스턴스 변수에 저장된 객체
+객체에서 허용한 메소드가 반환하는 객체의 매소드는 호출하면 안된다.  
+### 기차 충돌
+```java
+    final String ouputDir = ctxt.getOptions().getScratchDir().getAbsolutePath();
+```
+이러한 코드를 기차 충돌이라 부른다.   
+일반적으로 조잡하다 여겨지는 코드로 피하는 것이 좋다.  
+위 코드는 아래와 같이 나누는 것이 좋다.  
+```java
+    Options options = ctxt.getOptions(); 
+    File scratchDir = options.getScratchDir();
+    final String ouputDir = scratchDir.getAbsolutePath();
+```
+위 코드가 디미터 법칙을 위반하는지는 각각이 객체인지 아니면 자료구조인지에 달렸다.  
+객체라면
+- 내부구조를 숨겨야 하므로 위반 O
+
+자료구조라면
+- 당연히 내부 구조를 노출하므로 위반 X
+
+### 잡종 구조
+이러한 혼란으로 절반은 객체, 절반은 자료구조인 구조가 나온다.  
+
+- 중요한 기능을 수행하는 함수
+- 공개 변수나 공개 조회/설정 함수  
+
+문제점
+- 공개 조회/설정 함수는 비공개 변수를 그대로 노출한다.
+- 잡종 구조는 새로운 함수는 물론이고 새로운 자료구조도 추가하기 어렵다.
+
+양쪽의 단점만 모아놓았기 때문에 피하는 것이 좋다.
+### 구조체 감추기
+위 예제가 진짜 객체라면?  
+내부 코드를 감춰야 하므로 줄줄이 엮어서는 안된다.  
+
+```java
+    ctxt.getAbsolutePathOfScratchDirectoryOption(); 
+    
+    ctxt.getScratchDirectoryOption().getAbsolutePath(); 
+```
+첫번째  
+- ctxt 객체에 공개해야하는 메소드가 너무 많다.  
+
+두번째
+- getScratchDirectoryOption()이 객체가 아니라 자료 구조를 반환한다고 가정한다.  
+
+어느 방법도 썩 내키지 않는다.  
+
+ctxt가 객체라면 '무엇인가를 하라' 라고 말해야지 조회를 하라고 말하면 안 된다.  
+그렇다면 마지막 결과 값인 임시 디렉터리의 절대경로를 살펴보자!
+
+- 임시 디렉터리의 절대 경로가 왜 필요할까?
+- 절대 경로를 얻어 어디에 쓸려고?
+
+```java
+    String outFile = outputDir + "/" + className.replace('.', '/') + ".class";
+    FileOutputStream fout = new FileOutputStream(outFile);
+    BufferedOutputStream bos = new BufferedOutputStream(fout);`
+```
+임시 디렉터리의 절대 경로를 얻으려는 이유가 임시 파일을 생성하기 위한 목적이 드러난다.  
+
+- 1번 모듈 : 임시 디렉터리 경로를 얻는다.
+- 2번 모듈 : 얻은 임시 디렉터리를 통해 임시 파일을 생성시킨다.
+
+```java
+    BufferedOutputStream bos = ctxt.createScratchFileStream(classFileName);
+```
+객체에게 맡기기에 적당한 임무로 보인다!  
+- ctxt는 내부구조를 드러내지 않는다.  
+- 모듈에서 해당 함수는 자신이 몰라야 하는 여러 객체를 탐색할 필요가 없다.
+- **따라서 디미터 법칙을 위반하지 않는다.**
+
+## 자료 전달 객체
+자료 구조체의 전형적인 형태는 '공개 변수'만 있고 함수가 없는 클래스이다.  
+이런 자료 구조체를 때로는 '자료 전달 객체' DTO라 한다.  
+DTO는 데이터베이스와 통신하거나 소켓에서 받은 메시지의 구문을 분석할 때 유용한 구조체다.  
+
+좀 더 일반적인 형태는 'Bean(빈)' 구조이다.  
+'Bean(빈)'은 비공개 변수를 getter/setter 함수로 조작한다.  
+일종의 사이비 캡슐화로, 일부 순수주의자나 만족시킬 뿐 별다른 이익을 제공하지 않는다.  
+
+```java
+class Address {
+
+	private final String postalCode;
+
+	private final String city;
+
+	private final String street;
+
+	private final String streetNumber;
+
+	private final String apartmentNumber;
+
+	public Address(String postalCode, String city, String street, 
+                   String streetNumber, String apartmentNumber) {
+		this.postalCode = postalCode;
+		this.city = city;
+		this.street = street;
+		this.streetNumber = streetNumber;
+		this.apartmentNumber = apartmentNumber;
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String street() {
+		return street;
+	}
+
+	public String streetNumber() {
+		return streetNumber;
+	}
+
+	public String apartmentNumber() {
+		return apartmentNumber;
+	}
+}
+```
+### 활성 레코드
+
+활성 레코드는 DTO의 특수한 형태다.  
+공개 변수가 있거나 비공개 변수에 조회 설정 함수가 있는 자료 구조지만,  
+대개 save나 find와 같은 탐색 함수도 제공한다.
+
+불행히도 활성 레코드에 비즈니스 규칙 메서드를 추가해 자료 구조를 객체로 취급하는 개발자가 흔하다.  
+그러면 자료 구조도 아니고 객체도 아닌 잡종 구조가 나오기 때문에 바람직하지 않다.  
+
+해결책은 **활성 레코드는 자료 구조로 취급한다.**  
+비즈니스 규칙을 담으면서 내부 자료를 숨기는 객체는 따로 생성한다.
+
+## 결론
+객체  
+- 동작을 공개하고 자료를 숨긴다.  
+- 새 객체 타입을 추가하기는 쉽다. 
+- 기존 객체에 새 동작을 추가하기는 어렵다.
+
+자료구조
+- 별다른 동작 없이 자료를 노출한다.
+- 기존 자료 구조에 새 동작을 추가하기는 쉽다. 
+- 기존 함수에 새 자료 구조를 추가하기는 어렵다.
+
+시스템을 구현할 때, 새로운 자료 타입을 추가하는 유연성이 필요하면 객체가 더 적합하다.  
+다른 경우로 새로운 동작을 추가하는 유연성이 필요하면 자료 구조와 절차적인 코드가 적합하다.  
+
+즉, 객체 지향 언어를 사용하다 해서 객체 지향적인 프로그그래밍을 하는 것이 아니라  
+상황에 따라서 절차 지향적인 구조를 취할 것인지 객체 지향적인 구조를 취할 것인지 판단해야한다.
