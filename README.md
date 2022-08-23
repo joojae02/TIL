@@ -5,4 +5,5 @@
 - Clean Code
 - 크롤링
 - csapp
+- etc
 ---------
