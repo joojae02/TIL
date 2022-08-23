@@ -26,7 +26,7 @@ driver.implicitly_wait(3)
 // url에 접근한다.
 driver.get('https://google.com')
 ```
-사용되는 메소드  
+사용되는 메소드   
 
 - find_element_by_name('HTML_name')
 - find_element_by_id('HTML_id')
