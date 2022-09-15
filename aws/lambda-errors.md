@@ -13,7 +13,7 @@
 - docker을 이용해 버전 관리
     - dockerfile을 작성해 image로 배포
     - 정상적으로 동작
-    - [docker 내용 정리]()
+    - [docker 내용 정리](https://github.com/joojae02/TIL/blob/main/aws/docker.md)
 ## empty page source return error
 > driver.get(url) 에서
 ```<html><head></head><body></body></html>```
@@ -27,7 +27,7 @@
     - vpc가 문제
     - vpc로 사설 네트워크망에 분리해놓으면
     - private subnet에서 외부 인터넷에 접속하기 위해선 별도의 nat gateway가 필요함
-    - [vpc 내용 정리]()
+    - [vpc 내용 정리](https://github.com/joojae02/TIL/blob/main/aws/vpc.md)
 - 해결방법
     - nat gateway는 유료 서비스임
         - 시간 단위로 가격이 측정되어 부담이됨
