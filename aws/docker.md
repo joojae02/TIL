@@ -6,6 +6,8 @@ Docker란 Go언어로 작성된 리눅스 컨테이너 기반으로하는 오픈
 - OS레벨의 가상화로 프로세스를 격리시켜 동작하는 방식
 
 ## VM 가상화 Docker 가상화
+> 가상화는 기술이고 클라우드는 환경이란 것이 두드러진 차이점
+> 클라우드와 가상화는 별개의 것   
 
 <img src = 'https://t1.daumcdn.net/cfile/tistory/9934023E5B8D2CCF15'>  
 
