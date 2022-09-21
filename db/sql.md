@@ -14,6 +14,7 @@ CREATE DATABASE [데이터베이스 명]
 ### DROP
 - 데이터 베이스 자체를 삭제할때 사용
 - 테이블을 삭제 할때도 사용가능
+- 11
 ```sql
 DROP DATABASE [데이터베이스 명]
 DROP TABLE [테이블명]
