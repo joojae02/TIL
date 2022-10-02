@@ -22,7 +22,7 @@ username=kim&age=20
     - message body 데이터 직접 조회
 
 ### 임시 저장소 기능
-HTTP 요청이 시작부터 끝날 때 까지 유지되는 임시 저장소 기능   
+HTTP 요청이 시작부터 끝날 때 까지 유지되는 임시 저장소 기능을 함
 - 저장 : `request.setAttribute(name, value)`
 - 조회 : `request.getAttribute(name)`
 
