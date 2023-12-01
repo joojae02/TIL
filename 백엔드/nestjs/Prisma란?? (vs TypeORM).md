@@ -1,31 +1,31 @@
 
-이번 nestjs 프로젝트를 진행하면서 ORM으로 Prisma를 선택하였습니다.
+이번 nestjs 프로젝트를 진행하면서 ORM으로 Prisma를 선택했습니다.
 왜 Prisma를 선택했는지에 대한 포스팅입니다.
 
 # Prisma란??
-Prisma는 자바스크립트와 타입스크립트 커뮤니티에서 주목받고 있는 차세대 ORM(Object Relational Mapping) 프레임워크입니다.
+Prisma는 자바스크립트와 타입스크립트 커뮤니티에서 주목받고 있는 차세대 ORM(Object Relational Mapping) 프레임워크이다
 
 ## ORM이란??
-**ORM**은 **DB 데이터** 즉 **Schema**를 **객체(Object)**로 매핑해 주는 역할을 하는 것입니다.
-모델링 된 객체와 관계를 바탕으로 SQL을 자동으로 생성해 주는 도구입니다.
+**ORM**은 **DB 데이터** 즉 **Schema**를 **객체(Object)**로 매핑해 주는 역할을 하는 것이다
+모델링 된 객체와 관계를 바탕으로 SQL을 자동으로 생성해 주는 도구이다
 > 데이터베이스 데이터 <- 매핑 -> Object 필드
 
-Node 진영에서는 주로 Sequelize, TypeORM을 사용합니다.
+Node 진영에서는 주로 Sequelize, TypeORM을 사용한다
 
-데이터베이스와 상호작용을 하는 응용 애플리케이션을 개발할 때 프로그래머가 직접 SQL을 작성하지 않아도 되어 개발 생산성을 높여준다는 측면에서는 기존 ORM과 비슷합니다.
+데이터베이스와 상호작용을 하는 응용 애플리케이션을 개발할 때 프로그래머가 직접 SQL을 작성하지 않아도 되어 개발 생산성을 높여준다는 측면에서는 기존 ORM과 비슷하다
 
-Prisma는 기존 ORM과 달리 자체적인 스키마 문법을 제공하고 이 스키마를 통해서 DB 마이그레이션과 클라이언트 코드 생성을 완전히 자동으로 생성해줍니다.
+Prisma는 기존 ORM과 달리 자체적인 스키마 문법을 제공하고 이 스키마를 통해서 DB 마이그레이션과 클라이언트 코드 생성을 완전히 자동으로 생성해준다
 
 # 왜 Prisma?
 
-아까 위에서 말한 `스키마를 통해서 DB 마이그레이션과 클라이언트 코드 생성을 완전히 자동으로 생성해줍니다` 
-> 이게 좋은 점이 기존 TypeORM에서 런타임시에 터지던 에러를 컴파일 타임에 잡아줄수 있습니다.
+아까 위에서 말한 `스키마를 통해서 DB 마이그레이션과 클라이언트 코드 생성을 완전히 자동으로 생성해준다` 
+> 이게 좋은 점이 기존 TypeORM에서 런타임시에 터지던 에러를 컴파일 타임에 잡아줄수 있다.
 
 주로 많이 쓰는 TypeORM과 차이를 써보면
 ## Schema 선언
 
-Prisma Schema는 `직관적` `낮은 러닝커브`가 장점이라고 생각합니다.
-훨씬 직관적이고 한눈에 알아보기 편한 구조입니다.
+Prisma Schema는 `직관적` `낮은 러닝커브`가 장점이라고 생각했다
+훨씬 직관적이고 한눈에 알아보기 편한 구조이다
 
 ```ts
 model User {
@@ -91,10 +91,10 @@ export class Post {
 ```
 
 ## Prisma Migrate + Prisma Introspection
-- Prisma Migrate는 schema.prisma를 토대로 DB schema를 만들어 줍니다.
+- Prisma Migrate는 schema.prisma를 토대로 DB schema를 만들어 준다.
 
-- Prisma Introspection은 Prisma Migrate와 반대 기능입니다. 
-- 만약 기존 서비스의 ORM을 Prisma로 바꾸는 경우 DB schema는 있는데 schema.prisma는 없을때 사용하면 만들어줍니다.
+- Prisma Introspection은 Prisma Migrate와 반대 기능이다.
+- 만약 기존 서비스의 ORM을 Prisma로 바꾸는 경우 DB schema는 있는데 schema.prisma는 없을때 사용하면 만들어준다.
 
 ```bash
 $ npx prisma migrate dev
@@ -106,7 +106,7 @@ $ npx prisma migrate deploy
 
 ## 타입 안전성
 
-**TypeORM:** `typescript` 런타임 위에서 존재하므로, `Complie Time`에서 검사하기 때에 오류가 많습니다.
+**TypeORM:** `typescript` 런타임 위에서 존재하므로, `Complie Time`에서 검사하기 때에 오류가 많이 뜬다...
 
 ```ts
 const postRepository = getManager().getRepository(Post)
@@ -124,11 +124,11 @@ if (post.content.length > 0) {
 }
 ```
 
-- `Typescript` 레벨의 문법 오류 및 체크는 가능하지만 `SQL Code`(?) 는 검사할 수 없습니다.
-	-  그니까 위에 `select`에서 없는 `content` 칼럼을 출력했지만, `TS Complier`는 이를 체크하지 못합니다.
-	- 결국 런타임에서 에러나 나게 됩니다
+- `Typescript` 레벨의 문법 오류 및 체크는 가능하지만 `SQL Code`(?) 는 검사할 수 없다.
+	-  그니까 위에 `select`에서 없는 `content` 칼럼을 출력했지만, `TS Complier`는 이를 체크하지 못한다.
+	- 결국 런타임에서 에러가 나오게 된다
 
-하지만 `Prisma`는 `key` 형태로 볼 수 있어 검사가 가능하죠
+하지만 `Prisma`는 `key` 형태로 볼 수 있어 검사가 가능해진다
 ```ts
 const publishedPosts = await prisma.post.findMany({
   where: { published: true },
@@ -145,29 +145,31 @@ if (post.content.length > 0) {
   console.log(`This post has some content.`) 
 }
 ```
-TypeORM과 달리 Prisma는 타입의 안전을 보장해줍니다.
-`createdPosts`변수는 `id`와 `title` 두개의 키값을 가지는 객체인 거죠
+TypeORM과 달리 Prisma는 타입의 안전을 보장해준다.
+`createdPosts`변수는 `id`와 `title` 두개의 키값을 가지는 객체인 것이다
 
 
 
 # 결론
 
-제가 Prisma를 사용하기로 선택한 주요 3가지를 정리해봤습니다.
+제가 Prisma를 사용하기로 선택한 주요 3가지를 정리해봤는데
 
 물론 단점들도 있습니다
 - 성능 이슈가 발생할 수 있다.
 - Prisma가 자동으로 생성하는 SQL 쿼리가 효율적이지 않을 때가 있다.
 - 다른 프레임워크에 비해 부족한 정보
+- 아쉬운 호환성
 - 등등
 
 이슈들이 있지만
 
-그래도 실제로 사용해보니 생각보다 더 편합니다
+그래도 실제로 사용해보니 생각보다 더 편했습니다
 컴파일 딴에서 에러들을 잡아주는게 좋더라구요
 
 글고 공식문서가 정말 잘 작성되어 있습니다.
 그냥 공식문서 보면서 어떤거 써야할지만 정하면 될 정도
 
+고민하시는 분들은 Prisma 써보시는거 강추 드립니다!!
 
 ## 참고 자료
 - [What is Prisma?](https://www.prisma.io/docs/concepts/overview/what-is-prisma)
