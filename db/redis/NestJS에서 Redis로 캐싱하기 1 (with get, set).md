@@ -198,70 +198,16 @@ const finder = async (key: string) => await this.prisma.user.findUnique({ where:
 
 대충 뭐 이런식으로???
 
-### `sadd`
-```ts
-async sadd<T>(key: string, value: T[], expiretime: number, converter: (value: T) => string): Promise<void> {
-	const convertedList = value.map((v: T) => converter(v));
-	if (convertedList.length <= 0) {
-		return;
-	}
-	await this.redisClient.sadd(key, ...convertedList);
-	await this.redisClient.expire(key, expiretime);
-}
-```
-
-요거도 위의 `set`과 거의 동일한 로직
-
-근데 여기서 `value`를 배열로 받고 있는데
-음.. 일단 좀 맘에 안들긴 하는데...
-
-다른 방법 써서 바꿔도 좋을듯..
-요소 하나도 받을 수 있도록??
-
-### `smembers`
-
-```ts
-async smembers<T>(
-	key: string,
-	converter: (result: string) => T,
-	finder?: (key: string) => Promise<T[]>,
-): Promise<T[] | null> {
-	const members = await this.redisClient.smembers(key);
-	
-	if (members.length <= 0 || !members) {
-		if (!finder) {
-			return null;
-		}
-		
-		const finderMembers = await finder(key);
-		
-		if (finderMembers.length <= 0) {
-			return finderMembers;
-		}
-		
-		const stringMembers = finderMembers.map((value) => JSON.stringify(value));
-		await this.redisClient.sadd(key, ...stringMembers);
-		await this.redisClient.expire(key, 30);
-		
-		return finderMembers;
-	}
-	return members.map((value: string) => converter(value));
-}
-```
-
-음 이거도 위의 `get`과 비슷한 맥락인데...
-
-생각보다 깔끔하지는 않은거 같아서
-추후 리펙토링 필요해 보임....
-
 
 ## 결론
 
 cache manager에서 사용할 수 없는 컬렉션들을 쓰기 위해서 직접 구현하기로 결정했는데
 
 좀더 범용적이고 고도화된 코드를 작성하고 싶어서
-기존에 있는 코드에서 좀 더 고도화하는 작업을 해줬는데
-아직 막 맘에 들지는 않지만 그래도 기존에 있던 코드보다는 사용하기 편해진 것 같다
+기존에 있는 코드에서 좀 더 고도화하는 작업을 해줬다
+
+우선은 간단한 `get`, `set`이고 다른 함수들은
+다음 게시물에서 확인할 수 있다
 
 
 참고 자료
