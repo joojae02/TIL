@@ -1,5 +1,19 @@
 
-## 우선 서버리스란??
+## Labmbda란?
+
+AWS Lambda는 서버를 프로비저닝 또는 관리하지 않고도 실제로 모든 유형의 애플리케이션 또는 백엔드 서비스에 대한 코드를 실행할 수 있는 이벤트 중심의 서버리스 컴퓨팅 서비스이다.
+
+- Function 단위로 어플리케이션을 올림
+- 이벤트가 발생되면 실행
+- 서버리스의 대표적인 서비스
+
+- 로드 밸런싱 지원
+- 오토 스케일링 지원
+- 에러시 자동 에러 핸들링
+
+![](https://i.imgur.com/xHB2WzT.png)
+
+## 서버리스란??
 > 서버가 없다??? 
 
 서버가 없다는 뜻이 아닌 서버의 존재를 신경 쓸 필요가 없다는 뜻이다.  
@@ -14,21 +28,8 @@
 코드를 Function 단위로 쪼개 대기 상태에 둠
 -> 요청이 들어오면 서버가 대기상태의 Function을 실행시켜 처리
 -> 끝나면 다시 대기 상태로 만듬
-# lambda
-## labmbda란?
-lambda는 AWS에서 제공하는 서버리스 컴퓨팅 플렛폼이다  
-
-- Function 단위로 어플리케이션을 올림
-- 이벤트가 발생되면 실행
-- 서버리스의 대표적인 서비스
-
-- 로드 밸런싱 지원
-- 오토 스케일링 지원
-- 에러시 자동 에러 핸들링
-
-![](https://i.imgur.com/xHB2WzT.png)
-
 ### 언제 쓰는게 좋은가?
+
 코드를 계속 실행시키는 것보단 특정 조건때 실행하는 코드를 사용할때 유용한다.
 - 서버 없이 간단한 코드 실행
 - 특정 기간, 특정 주기로 코드 실행
@@ -84,47 +85,62 @@ def lambda_handler(event, context):
 #### Stream 기반 호출
 - DynamoDB Stream, Kinesis를 플링하여 전달
 
-## Lambda 개발 환경
+## 작동원리
 
-- Lambda Web Console
-- AWS CLI 
-- CDK (Cloud Development Kit)
-- SAM (Serverless Framework)
+![](https://i.imgur.com/JHX8Z3q.png)
 
-## Lambda 사용 예시
+### 동기
+- Worker
+	- 실제 요청된 함수 코드를 실행한다.
+- Count service
+	- Concurrency 제한 등 요청 관련 트래킹 및 관리를 한다.
+- Placement service
+	- Worker을 생성,, 수명 주기를 관리한다.
+- Worker Manager
+	- Worker들의 상태를 확인하고 Request를 할당 혹은 Placement service에 worker 생성을 요청한다.
+- Frontend Worker
+	- User들이 보낸 Requestfmf 받고 검증 후 Worker Manager에게 전달한다.
+- Load Balancer
+	- Application Load Balancer로 user들이 Invoke 하는 request들을 Frontend로 Route하는 기능을 한다.
+로 작동이 된다
 
-### Web Apps
-- 정적 HTML 페이지
-### Backends
-- Apps, services
-- 백엔드 서버
-### Data Processing
-- 실시간 스트리밍
-- Batch
-### IT Automation
-- 시스템 정책 관리
-- 인프라 구조 관리
+간략하게 흐름은
+요청 -> 로드밸런서 -> 프론트엔드 -> 작업 관리자 -> 워커 -> 실행
+의 순서이다.
+
+#### 비동기
+비동기 호출의 경우에는
+- Event Invoke Frontend Service
+	- 비동기 요청을 받고 내부 SQS 대기열에 배치한다.
+- Polling Instances
+	- Poller 들이 SQS에서 메세지를 읽고 기존 Frontend Service로 전송한다.
+- Event Destinations
+	- 동기 방식대로 처리 후 결과에 따른 알림을 제공한다.
+
+결국 앞단에서 SQS를 이용해 대기열을 이용하는 것 외에는 기존 방식과 다르지 않다.
+
+### 구조
+
+![](https://i.imgur.com/I0gI018.png)
+
+함수별로 자체 컨테이너에서 실행된다고 생각해도 괜찮을것 같다.
+그리고 사실상 모두 하나의 EC2위에서 관리되고 있다.
+
+좀 더 내부로 들어가보자면
+
+![](https://i.imgur.com/kLm9dKw.png)
+
+위 그림과 같은 구조로 실행되게 된다.
+같은 함수를 동시에 여러번 호출하게 되면 동일한 샌드박스 위에서 실행된다.
+
+![](https://i.imgur.com/TvRhKaO.png)
+
+그러다 FireCracker 라는 가상화 기술이 나오면서 기존의 VM보다 빠르고 안전한 microVM을 사용하게 되었다.
+따라서 성능을 유지하면서 실행 시간 감소, 메모리 사용량 감소, 확장성 강화했다.
+
+참고로 FireCracker는 오픈소스이고 Rust로 작성되어있다.
+- https://github.com/firecracker-microvm/firecracker
 
 
-## 레이어
-> Lambda 계층은 추가 코드 또는 데이터를 포함하는 .zip 파일 아카이브
-> 	일반적으로 라이브러리 종속 항목, 사용자 지정 런타임 또는 구성 파일이 포함
-
-#### 사용 이유
-- 배포 패키지의 크기를 줄이기 위해
-- 핵심 함수 로직을 종속 항목과 분리하기 위해
-- 여러 함수에서 종속 항목을 공유하기 위해
-- Lambda 콘솔 코드 편집기를 사용하기 위해
-
-![](https://i.imgur.com/CxZOk5b.png)
-
-- AWS 람다는 함수 실행에 필요한 모든 라이브러리를 담아야함  
-- 레이어를 사용하지 않으면 모든 함수에 라이브러리를 매번 넣어줘야함
-
-- 람다 레이어를 이용하면 공통 부분을 만들어 함수사이 고유 가능함  
-
-참고  
-- https://docs.aws.amazon.com/lambda/latest/dg/welcome.html
-- https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html
-- https://docs.aws.amazon.com/ko_kr/lambda/latest/dg/chapter-layers.html
-- https://www.44bits.io/ko/keyword/aws-lambda
+좀 더 자세한 설명 보고 싶으신 분은
+- https://www.youtube.com/watch?v=QdzV04T_kec
