@@ -1,13 +1,94 @@
+# Obsidian Vault
 
-# TIL
+PARA + 제텔카스텐 방식으로 관리하는 개인 지식 베이스
 
-- [aws](https://github.com/joojae02/TIL/tree/main/aws)
-- [이것이 자바다](https://github.com/joojae02/TIL/tree/main/java)
-- [Clean Code](https://github.com/joojae02/TIL/tree/main/2022-cleancode)
-- [크롤링](https://github.com/joojae02/TIL/tree/main/crawling)
-- [csapp](https://github.com/joojae02/TIL/tree/main/csapp)
-- [etc](https://github.com/joojae02/TIL/tree/main/etc)
----------
-## 학교 수업
-- [알고리즘](https://github.com/joojae02/TIL/tree/main/algorithm)
-- [네트워크](https://github.com/joojae02/TIL/tree/main/network)
+## 디렉토리 구조
+
+```
+📁 Projects/          # 진행 중인 프로젝트
+├── 개발블로그/       # 작성 중인 개발 블로그 글
+└── 취미블로그/       # 작성 중인 취미 블로그 글
+
+📁 Areas/             # 지속적으로 관리하는 영역
+├── AI/
+├── algorithm/
+├── db/
+├── network/
+├── 백엔드/
+├── 언어/
+├── 운영체제/
+├── 클라우드/
+└── 프론트/
+
+📁 Resources/         # 참고 자료
+├── Zettelkasten/     # 원자적 개념 노트
+├── Attachments/      # 이미지, 첨부파일
+├── Excalidraw/       # 다이어그램
+├── References/       # 외부 참고자료
+├── Templates/        # 노트 템플릿
+└── 책/               # 책 정리
+
+📁 Archives/          # 완료된 프로젝트, 비활성 자료
+├── 개발블로그/       # 발행된 개발 글
+├── 취미블로그/       # 발행된 취미 글
+├── boost/
+├── crawling/
+├── etc/
+├── Nas/
+└── 고퍼콘/
+
+📁 Private/           # 개인 노트
+```
+
+## 워크플로우
+
+### 공부 정리 플로우
+
+```
+1. 공부하면서 메모
+   └─→ Resources/Zettelkasten/에 원자적 노트 생성
+       (하나의 개념 = 하나의 노트)
+
+2. 관련 개념끼리 [[링크]] 연결
+   └─→ [[HTTP 상태코드]] ← [[REST API]]
+
+3. 주제가 깊어지면 Areas/로 승격
+   └─→ Areas/네트워크/ 등에 정리
+```
+
+### 블로그 작성 플로우
+
+```
+1. 글 작성 시작
+   └─→ Projects/개발블로그/초안-제목.md 생성
+
+2. Zettelkasten 노트들 참조하며 작성
+   └─→ [[Redis TTL]], [[캐시 전략]] 등 링크 활용
+
+3. 발행 후
+   └─→ Archives/개발블로그/2026-01-제목.md 로 이동
+```
+
+## Claude Code Skills
+
+| 명령어 | 용도 | 예시 |
+|--------|------|------|
+| `/zettel` | 공부한 개념 정리 | "Redis TTL에 대해 정리해줘" |
+| `/blog` | 블로그 초안 작성 | "Redis 캐시 전략 블로그 써줘" |
+| `/publish` | 블로그 발행 처리 | "Redis 글 발행해줘" |
+
+## PARA 원칙
+
+| 폴더 | 용도 | 기준 |
+|------|------|------|
+| **Projects** | 진행 중인 프로젝트 | 마감이 있는 작업 |
+| **Areas** | 지속 관리 영역 | 꾸준히 관심 갖는 주제 |
+| **Resources** | 참고 자료 | 나중에 유용할 정보 |
+| **Archives** | 비활성 자료 | 완료되었거나 더 이상 사용 안 함 |
+
+## 제텔카스텐 원칙
+
+- **원자성**: 하나의 노트에 하나의 개념만
+- **연결성**: `[[링크]]`로 관련 개념 연결
+- **고유성**: 제목만 봐도 내용을 알 수 있게
+- **영구성**: 나중에 다시 봐도 이해할 수 있게 작성
